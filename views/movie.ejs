@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<title> Movie Api </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="/assets/movie-list.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link href="/assets/styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<h1>Movie Api</h1>
+		<div id="movie-table">
+			<form id="movie_form">
+				<input type="text" name="item_com" placeholder="Add new movie..." />
+				<button type="submit">Add movie to database</button>
+			</form>
+			<a href="/comments" style="width: 100%;">
+				Go to comment section
+			</a>
+			<ul>
+				
+				<% for(var i=0; i < movies.length; i++){ %>
+				<li id="limovie_<%=i%>" data-target="#demo_<%=i%>,#comment_div_<%=i%>" data-toggle="collapse">
+					<%= movies[i].Title -%></br> 
+					<p id="demo_<%=i%>" class="collapse" style="text-align: left; font-size: 14px;">
+Year: <%= movies[i].Year -%></br>
+Rated: <%= movies[i].Rated -%></br> 
+Released: <%= movies[i].Released -%></br> 
+Runtime: <%= movies[i].Runtime -%></br> 
+Genre: <%= movies[i].Genre -%></br> 
+Director: <%= movies[i].Director -%></br> 
+Writer: <%= movies[i].Writer -%></br> 
+Actors: <%= movies[i].Actors -%></br> 
+Plot: <%= movies[i].Plot -%></br> 
+Language: <%= movies[i].Language -%></br> 
+Country: <%= movies[i].Country -%></br> 
+Awards: <%= movies[i].Awards -%></br> 
+Poster: <%= movies[i].Poster -%></br>
+Ratings:<%= movies[i].Ratings.map(a => ' ' + a.Source + ': ' + a.Value )-%></br> 
+Metascore: <%= movies[i].Metascore -%></br> 
+imdbRating: <%= movies[i].imdbRating -%></br> 
+imdbVotes: <%= movies[i].imdbVotes -%></br> 
+imdbID: <%= movies[i].imdbID -%></br> 
+Type: <%= movies[i].Type -%></br> 
+DVD: <%= movies[i].DVD -%></br> 
+BoxOffice: <%= movies[i].BoxOffice -%></br> 
+Production: <%= movies[i].Production -%></br> 
+Website: <%= movies[i].Website -%></br>
+id: <%= movies[i]._id -%>
+					</p>
+				</li>
+				<div id="comment_div_<%=i%>" class="collapse">
+						<form id="comment_subform_<%=i%>">
+							<input type="text" name="item_com_<%=i%>" placeholder="Add new comment to this movie..." />
+							<button type="submit">Add comment</button>
+						</form>
+					</div>
+				
+			<% } %>
+
+			</ul>
+		</div>
+	</body>
+</html>

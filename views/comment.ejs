@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title> Movie Api </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="/assets/comment-list.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link href="/assets/styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<h1>Movie Api</h1>
+		<div>
+			
+		</div>
+		
+		<div id="movie-table">
+			<form id="comment_form">
+				<input type="text" name="item" placeholder="Search comments by movie ID..." />
+				<button type="submit">Search</button>
+			</form>
+
+			<a href="/movies" style="float: right; width: 100%;">
+				Go to movie section
+			</a>
+			<ul>
+				<% for(let i=0; i < comments.length; i++){ if(comments[i].Comments.length > 0) { for(let j=0; j < comments[i].Comments.length; j++) {%>
+				<li id="licomment_<%=i%>_<%=j%>"> 
+                    <%= comments[i].Comments[j] -%></br><p></p> 
+					<p style="display: block; color: rgba(26, 175, 71, 0.667); font-size: 14px;">
+                    <%= comments[i].Title -%></br>
+                    id: <%= comments[i]._id -%>
+					</p>
+				</li>
+			<% }}} %>
+			</ul>
+		</div>
+	</body>
+</html>
