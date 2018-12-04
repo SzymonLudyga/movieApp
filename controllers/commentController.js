@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 // app.use(bodyParser.json());
 const urlencodedParser = bodyParser.urlencoded({extended: true});
 
+let commentAndId, id;
+
 module.exports = function(app, Movie) {
      
 	// 1. getting comments from mongodb database
@@ -12,18 +14,17 @@ module.exports = function(app, Movie) {
 
 	app.get('/comments', function(req, res){
 
-		try
-		{
-			Movie.find({}, null, {sort: {'item.Title': 1}}, function(err, data){
+		Movie.find({}, null, {sort: {'item.Title': 1}}, function(err, data){
+			try 
+			{
 				if(err) throw err;
 				res.render('comment', {comments: data});
-			});
-		}
-		catch(err)
-		{
-			res.send(err.status);
-		}
-		
+			}
+			catch(err)
+			{
+				res.status(500).send(err);
+			}
+		});		
 		
 	});
 
@@ -35,7 +36,7 @@ module.exports = function(app, Movie) {
 		}
 		else
 		{
-			res.status(400).send('Not Found');
+			res.status(400).send('Bad Request');
 		}
 		
 	});
@@ -45,35 +46,56 @@ module.exports = function(app, Movie) {
 	// 2. adding comment to mongodb database to correct movie object
 
 	app.post('/comments', urlencodedParser, async function(req, res){
-		
-		// randomCommentId = Math.random().toString(36).substring(2);
 
 		if(req.body.item)
 		{	
 			Movie.findByIdAndUpdate(req.body.id, { $push: { Comments: {comment : req.body.item} }}, function(err, data) {
-				if (err) throw err;
-				res.json(data);
+				try 
+				{
+					if (err) throw err;
+					res.json(data);
+				}
+				catch(err)
+				{
+					res.status(500).send('Internal Server Error');
+				}
+				
 			});
 		}
 		else
 		{
-			res.status(400).send('Movie title is not present');
+			res.status(400).send('Comment is empty');
 		}
 
 	});
 
-	app.delete('/comments/:item', function(req, res) {
+	app.delete('/comments/:id', function(req, res) {
 
 		// delete the item form mongodb
 
-		let commentAndId = req.params.item.match(/\b[\w ]{1,100}\b/g);
-		let id = commentAndId[commentAndId.length - 1];
-		commentAndId.pop();
+		if(req.params.id)
+		{
+			commentAndId = req.params.id.match(/\b[\w ]{1,100}\b/g);
+			id = commentAndId[commentAndId.length - 1];
+			commentAndId.pop();
 
-		Movie.findByIdAndUpdate(id, { $pull: {Comments : {comment : commentAndId.join(' ')}}}, function(err, data){
-			if (err) throw err;
-			res.json(data);
-		});
+			Movie.findByIdAndUpdate(id, { $pull: {Comments : {comment : commentAndId.join(' ')}}}, function(err, data){
+				try 
+				{
+					if (err) throw err;
+					res.json(data);
+				}
+				catch(err)
+				{
+					res.status(500).send('Internal Server Error');
+				}
+			});
+		}
+		else
+		{
+			res.status(404).send('Not Found');
+		}
+		
 
 	});
 };

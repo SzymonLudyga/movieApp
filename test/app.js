@@ -14,7 +14,7 @@ require('chai').expect;
 chai.should();
 
 const movieId = '5bfd87f68c04672971996b2c';
-const searchedPhrase = 'pirates';
+const searchedPhrase = 'pirate';
 const omdbApi = 'http://www.omdbapi.com';
 
 describe('/GET / suite', function () {
@@ -62,9 +62,8 @@ describe('/POST / suite', function () {
 	before(function () {
 
 		nock(omdbApi)
-			.log(console.log)
 			.get(`/?t=${searchedPhrase}&apikey=${process.env.API_KEY}`)
-			.reply(200, {ok: 'ok'});
+			.reply(200, { status : 'OK'});
 
 		nock(omdbApi)
 			.get(`/?t=thismovietitledoesnotexist&apikey=${process.env.API_KEY}`)
@@ -75,9 +74,9 @@ describe('/POST / suite', function () {
 	it('/POST/ /movies should receive 200 after passing correct movie title', function(done) {
 		chai.request(server)
 			.post('/movies')
-			.send({item : 'pirates'})
+			.send({item : 'pirate'})
 			.end(function (err, res) {
-				res.should.have.status(404);
+				res.should.have.status(200);
 				done();
 			});
 	});
