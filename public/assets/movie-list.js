@@ -11,8 +11,18 @@ $(document).ready(function(){
 			success: function(){
 				location.reload();
 			}, 
-			error: function(){
-				location.reload();
+			error: function(err){
+
+				$.ajax({
+					type: 'GET',
+					url: '/failure/' + err.status,
+					success: function(){
+						window.location.href = '/failure/' + err.status;
+					}, 
+					error: function(){
+
+					}
+				});
 			}
 		});
 

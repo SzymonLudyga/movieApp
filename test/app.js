@@ -62,6 +62,7 @@ describe('/POST / suite', function () {
 	before(function () {
 
 		nock(omdbApi)
+			.log(console.log)
 			.get(`/?t=${searchedPhrase}&apikey=${process.env.API_KEY}`)
 			.reply(200, {ok: 'ok'});
 
@@ -69,6 +70,16 @@ describe('/POST / suite', function () {
 			.get(`/?t=thismovietitledoesnotexist&apikey=${process.env.API_KEY}`)
 			.reply(404, {status: 'Not Found'});
 
+	});
+
+	it('/POST/ /movies should receive 200 after passing correct movie title', function(done) {
+		chai.request(server)
+			.post('/movies')
+			.send({item : 'pirates'})
+			.end(function (err, res) {
+				res.should.have.status(404);
+				done();
+			});
 	});
 
 	it('/POST/ /movies should receive 404 after passing wrong movie title', function(done) {

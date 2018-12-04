@@ -46,9 +46,11 @@ module.exports = function(app, Movie) {
 
 	app.post('/comments', urlencodedParser, async function(req, res){
 		
+		// randomCommentId = Math.random().toString(36).substring(2);
+
 		if(req.body.item)
-		{
-			Movie.findByIdAndUpdate(req.body.id, { $push: { Comments: req.body.item }}, function(err, data) {
+		{	
+			Movie.findByIdAndUpdate(req.body.id, { $push: { Comments: {comment : req.body.item} }}, function(err, data) {
 				if (err) throw err;
 				res.json(data);
 			});
@@ -57,6 +59,21 @@ module.exports = function(app, Movie) {
 		{
 			res.status(400).send('Movie title is not present');
 		}
+
+	});
+
+	app.delete('/comments/:item', function(req, res) {
+
+		// delete the item form mongodb
+
+		let commentAndId = req.params.item.match(/\b[\w ]{1,100}\b/g);
+		let id = commentAndId[commentAndId.length - 1];
+		commentAndId.pop();
+
+		Movie.findByIdAndUpdate(id, { $pull: {Comments : {comment : commentAndId.join(' ')}}}, function(err, data){
+			if (err) throw err;
+			res.json(data);
+		});
 
 	});
 };

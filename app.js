@@ -1,13 +1,15 @@
 const express = require('express');
-const movieController = require('./controllers/movieController');
-const commentController = require('./controllers/commentController');
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const app = express();
 
-require('dotenv').config();
-
+const movieController = require('./controllers/movieController');
+const commentController = require('./controllers/commentController');
+const errorController = require('./controllers/errorController');
 const ENV = require('./.env.json');
+
+require('dotenv').config();
 
 let port = 8000;
 
@@ -30,7 +32,7 @@ mongoose.connect(process.env.DB_URL);
 // defining a schema
 
 const movieSchema = new mongoose.Schema({
-	Title: String,
+	Title: { type: String, required: true, unique: true },
 	Year: String,
 	Rated: String,
 	Released: String,
@@ -57,6 +59,8 @@ const movieSchema = new mongoose.Schema({
 	Comments: Array
 });
 
+movieSchema.plugin(uniqueValidator);
+
 // defining a model
 
 const Movie = mongoose.model('Movie', movieSchema);
@@ -65,6 +69,7 @@ const Movie = mongoose.model('Movie', movieSchema);
 
 movieController(app, Movie);
 commentController(app, Movie);
+errorController(app);
 
 app.listen(port);
 

@@ -11,9 +11,6 @@
 	</head>
 	<body>
 		<h1>Movie Api</h1>
-		<div>
-			
-		</div>
 		
 		<div id="movie-table">
 			<form id="comment_form">
@@ -25,15 +22,16 @@
 				Go to movie section
 			</a>
 			<ul>
-				<% for(let i=0; i < comments.length; i++){ if(comments[i].Comments.length > 0) { for(let j=0; j < comments[i].Comments.length; j++) {%>
-				<li id="licomment_<%=i%>_<%=j%>"> 
-                    <%= comments[i].Comments[j] -%></br><p></p> 
+				<% for(let i=0; i < comments.length; i++){ if(comments[i].Comments.length > 0) { for(let j=0; j < comments[i].Comments.length; j++) { for (let value of Object.values(comments[i].Comments[j])) {%>
+				<li id="licomment_<%=i%>"> 
+					
+					<%= value -%></br>
 					<p style="display: block; color: rgba(26, 175, 71, 0.667); font-size: 14px;">
                     <%= comments[i].Title -%></br>
                     id: <%= comments[i]._id -%>
 					</p>
 				</li>
-			<% }}} %>
+			<% }}}} %>
 			</ul>
 		</div>
 	</body>

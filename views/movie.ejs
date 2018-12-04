@@ -21,7 +21,7 @@
 			</a>
 			<ul>
 				
-				<% for(var i=0; i < movies.length; i++){ %>
+				<% for(let i=0; i < movies.length; i++){ %>
 				<li id="limovie_<%=i%>" data-target="#demo_<%=i%>,#comment_div_<%=i%>" data-toggle="collapse">
 					<%= movies[i].Title -%></br> 
 					<p id="demo_<%=i%>" class="collapse" style="text-align: left; font-size: 14px;">

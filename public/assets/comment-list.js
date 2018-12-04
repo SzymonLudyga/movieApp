@@ -2,8 +2,8 @@ $(document).ready(function(){
 
 	$('#comment_form').on('submit', function(){
 
-		var item = $('input[name=item]', this);
-		var comment = {item: item.val()};
+		let item = $('input[name=item]', this);
+		let comment = {item: item.val()};
 
 		$.ajax({
 			type: 'GET',
@@ -31,6 +31,20 @@ $(document).ready(function(){
 		});
 
 		return false;
+	});
+
+	$('li').on('click', function(){
+		let item = $(this).text().match(/\b[\w ]{1,100}\b/);
+		item = item[0].replace(/ /g, '-');
+		let movieId = $(this).text().match(/[a-z0-9]{24}/g).join();
+
+		$.ajax({
+			type: 'DELETE',
+			url: '/comments/' + item + '&' + movieId,
+			success: function(){
+				location.reload();
+			}
+		});
 	});
   
 });
