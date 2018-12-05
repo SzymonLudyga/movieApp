@@ -22,9 +22,10 @@
 			<ul>
 				
 				<% for(let i=0; i < movies.length; i++){ %>
-				<li id="limovie_<%=i%>" data-target="#demo_<%=i%>,#comment_div_<%=i%>" data-toggle="collapse">
-					<%= movies[i].Title -%></br> 
+				<li id="limovie_<%=i%>" data-target="#demo_<%=i%>,#comment_div_<%=i%>,#deleting_movie_<%=i%>" data-toggle="collapse">
+					<%= movies[i].Title -%>
 					<p id="demo_<%=i%>" class="collapse" style="text-align: left; font-size: 14px;">
+						<button id="deleting_movie_<%=i%>" class="collapse" type="submit" style="width: 20%; float: right;">Delete movie</button></br> 
 Year: <%= movies[i].Year -%></br>
 Rated: <%= movies[i].Rated -%></br> 
 Released: <%= movies[i].Released -%></br> 
@@ -52,11 +53,11 @@ id: <%= movies[i]._id -%>
 					</p>
 				</li>
 				<div id="comment_div_<%=i%>" class="collapse">
-						<form id="comment_subform_<%=i%>">
-							<input type="text" name="item_com_<%=i%>" placeholder="Add new comment to this movie..." />
-							<button type="submit">Add comment</button>
-						</form>
-					</div>
+					<form id="comment_subform_<%=i%>">
+						<input type="text" name="item_com_<%=i%>" placeholder="Add new comment to this movie..." />
+						<button type="submit">Add comment</button>
+					</form>
+				</div>
 				
 			<% } %>
 

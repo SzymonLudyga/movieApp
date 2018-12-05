@@ -36,6 +36,30 @@ $(document).ready(function(){
 
 			let movieId = $(this).text().match(/[a-z0-9]{24}/g).join();
 
+			$(`#deleting_movie_${i}`).on('click', function() {
+
+				$.ajax({
+					type: 'DELETE',
+					url: '/movies/' + movieId,
+					success: function(){
+						location.reload();
+					}, 
+					error: function(err){
+		
+						$.ajax({
+							type: 'GET',
+							url: '/failure/' + err.status,
+							success: function(){
+								window.location.href = '/failure/' + err.status;
+							}, 
+							error: function(){
+		
+							}
+						});
+					}
+				});
+			});
+
 			$(`#comment_subform_${i}`).on('submit', function(){
 				let item = $(`input[name=item_com_${i}]`, this);
 				let comment = {item: item.val(), id: movieId};
@@ -48,7 +72,7 @@ $(document).ready(function(){
 						location.reload();
 					},
 					error: function(err){
-						
+
 						$.ajax({
 							type: 'GET',
 							url: '/failure/' + err.status,

@@ -1,3 +1,5 @@
+const Movie = require('../databaseConfig');
+
 const bodyParser = require('body-parser');
 
 // app.use(bodyParser.json());
@@ -5,7 +7,7 @@ const urlencodedParser = bodyParser.urlencoded({extended: true});
 
 let commentAndId, id;
 
-module.exports = function(app, Movie) {
+module.exports = function(app) {
      
 	// 1. getting comments from mongodb database
 	// 2. sorting by movie title
@@ -30,15 +32,8 @@ module.exports = function(app, Movie) {
 
 	app.get('/comments/:id', function(req, res) {
 
-		if(req.params.id)
-		{
-			res.send(req.params.id);
-		}
-		else
-		{
-			res.status(400).send('Bad Request');
-		}
-		
+		res.send(req.params.id);
+
 	});
 
 
@@ -64,14 +59,14 @@ module.exports = function(app, Movie) {
 		}
 		else
 		{
-			res.status(400).send('Comment is empty');
+			res.status(422).send('Comment is empty');
 		}
 
 	});
 
 	app.delete('/comments/:id', function(req, res) {
 
-		// delete the item form mongodb
+		// delete the comment of the movie from mongodb
 
 		if(req.params.id)
 		{
@@ -93,7 +88,7 @@ module.exports = function(app, Movie) {
 		}
 		else
 		{
-			res.status(404).send('Not Found');
+			res.status(422).send('Comment id is not present');
 		}
 		
 

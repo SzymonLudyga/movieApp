@@ -4,9 +4,9 @@ module.exports = function(app) {
 
 	app.get('/failure/:id', function(req, res){
 
-		if(req.params.id === '400')
+		if(req.params.id === '422')
 		{
-			message = 'Bad Request';
+			message = 'Unprocessable Entity';
 		}
 		else if(req.params.id === '404')
 		{

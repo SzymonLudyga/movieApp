@@ -1,10 +1,11 @@
 const bodyParser = require('body-parser');
 const requisition = require('requisition');
 
+const Movie = require('../databaseConfig');
 
 const urlencodedParser = bodyParser.urlencoded({extended: true});
 
-module.exports = function(app, Movie)
+module.exports = function(app)
 {
 
 	app.use(bodyParser.json());
@@ -51,8 +52,11 @@ module.exports = function(app, Movie)
 			if (process.env.NODE_ENV === 'test' && movieObj.status === 'OK') {
 				res.status(200).send(movieObj);
 			}
-			else if (process.env.NODE_ENV === 'test' && movieObj.status !== 'OK') {
+			else if (process.env.NODE_ENV === 'test' && movieObj.status === 'Not Found') {
 				res.status(404).send(movieObj);
+			}
+			else if (process.env.NODE_ENV === 'test' && movieObj.status === 'Conflict') {
+				res.status(409).send(movieObj);
 			}
 			else
 			{
@@ -105,8 +109,34 @@ module.exports = function(app, Movie)
 		}
 		else
 		{
-			res.status(400).send('Movie title is not present');
+			res.status(422).send('Movie title is not present');
 		}
+
+	});
+
+	app.delete('/movies/:id', function(req, res) {
+
+		// delete the movie from mongodb
+
+		if(req.params.id)
+		{
+			Movie.findByIdAndDelete(req.params.id, null, function(err, data){
+				try 
+				{
+					if (err) throw err;
+					res.json(data);
+				}
+				catch(err)
+				{
+					res.status(500).send('Internal Server Error');
+				}
+			});
+		}
+		else
+		{
+			res.status(422).send('Movie id is not present');
+		}
+		
 
 	});
    

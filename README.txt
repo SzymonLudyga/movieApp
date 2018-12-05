@@ -12,7 +12,5 @@ Commands:
 - npm run test: starts unit tests of application endpoints
 
 Things to be added/improved:
-- deleting movies/comments
-- checking if given movie already exists in database
-- better error handling (adding some endpoints with error status)
+- better error handling (throwing error and add middleware)
 - unit tests improvement
