@@ -4,7 +4,7 @@
   "description": "movie app",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
+    "start": "nodemon app.js",
     "test": "mocha --exit --timeout 5000",
     "lint": "eslint --ignore-path .gitignore ."
   },
