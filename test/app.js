@@ -47,11 +47,20 @@ describe('/GET / suite', function () {
 			});
 	}); 
 
-	it(`/GET/ /comments/:id ### Should receive 200 status code for movieId: ${movieId}`, function(done) {
+	it(`/GET/ /new_comment/:id ### Should receive 200 status code for movieId: ${movieId}`, function(done) {
 		chai.request(server)
-			.get('/comments/' + movieId)
+			.get('/new_comment/' + movieId)
 			.end(function (err, res) {
 				res.should.have.status(200);
+				done();
+			});
+	});
+
+	it('/GET/ /new_comment/:id ### Should receive 500 status code after not passing movieId', function(done) {
+		chai.request(server)
+			.get('/new_comment/')
+			.end(function (err, res) {
+				res.should.have.status(500);
 				done();
 			});
 	});

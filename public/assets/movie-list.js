@@ -12,7 +12,6 @@ $(document).ready(function(){
 				location.reload();
 			}, 
 			error: function(err){
-
 				$.ajax({
 					type: 'GET',
 					url: '/failure/' + err.status,

@@ -31,6 +31,11 @@ movieController(app);
 commentController(app);
 errorController(app);
 
+app.use((error, res) => {
+	res.status(error.status || 500);
+	res.render('failure', {err: error.status});
+});
+
 app.listen(port);
 
 module.exports = app;

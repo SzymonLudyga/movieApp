@@ -5,6 +5,8 @@ const Movie = require('../databaseConfig');
 
 const urlencodedParser = bodyParser.urlencoded({extended: true});
 
+let error;
+
 module.exports = function(app)
 {
 
@@ -20,18 +22,19 @@ module.exports = function(app)
 	// 2. sorting by movie title
 	// 3. passing result to the view
 
-	app.get('/movies', function(req, res){
+	app.get('/movies', function(req, res, next){
 
 		
-		Movie.find({}, null, {sort: {'item.Title': 1}}, function(err, data){
+		Movie.find({}, null, {sort: {'item.Title': 1}}, function(error, data){
 			try 
 			{
-				if(err) throw err;
+				if(error) throw error;
 				res.render('movie', {movies: data});
 			}
-			catch(err)
+			catch(error)
 			{
-				res.status(500).send(err);
+				error.status = 500;
+				next(error);
 			}
 		});
 		
@@ -42,7 +45,7 @@ module.exports = function(app)
 	// 2. getting movie details from ombdApi based on request body
 	// 3. saving movie details to mongodb database
 
-	app.post('/movies', urlencodedParser, async function(req, res){
+	app.post('/movies', urlencodedParser, async function(req, res, next){
 
 		if(req.body.item)
 		{
@@ -88,53 +91,61 @@ module.exports = function(app)
 						Production: movieObj.Production,
 						Website: movieObj.Website,
 						Comments: []
-					}).save(function(err, data) {
+					}).save(function(error, data) {
 						try 
 						{
-							if (err) throw err;
+							if (error) throw error;
 							res.json(data);
 						}
-						catch(err)
+						catch(error)
 						{
-							res.status(409).send(err);
+							error.status = 409;
+							next(error);
 						}
 					});
 				}
 				else
 				{
-					res.status(404).send(movieObj.Error);
+					error = new Error('Not Found');
+					error.status = 404;
+					next(error);
 				}
 			}
 			
 		}
 		else
 		{
-			res.status(422).send('Movie title is not present');
+			error = new Error('Unprocessable Entity');
+			error.status = 422;
+			next(error);
 		}
 
 	});
 
-	app.delete('/movies/:id', function(req, res) {
+	app.delete('/movies/:id', function(req, res, next) {
 
 		// delete the movie from mongodb
 
 		if(req.params.id)
 		{
-			Movie.findByIdAndDelete(req.params.id, null, function(err, data){
+			Movie.findByIdAndDelete(req.params.id, null, function(error, data){
 				try 
 				{
-					if (err) throw err;
+					if (error) throw error;
 					res.json(data);
 				}
-				catch(err)
+				catch(error)
 				{
-					res.status(500).send('Internal Server Error');
+					error.status = 500;
+					next(error);
 				}
 			});
 		}
 		else
 		{
-			res.status(422).send('Movie id is not present');
+			error = new Error('Unprocessable Entity');
+			error.status = 422;
+			next(error);
 		}
 		
 

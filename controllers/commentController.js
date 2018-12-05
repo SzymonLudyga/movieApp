@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 // app.use(bodyParser.json());
 const urlencodedParser = bodyParser.urlencoded({extended: true});
 
-let commentAndId, id;
+let commentAndId, id, error;
 
 module.exports = function(app) {
      
@@ -14,57 +14,69 @@ module.exports = function(app) {
 	// 3. passing result to the view
 	// 4. filtering comments by the id of the movie
 
-	app.get('/comments', function(req, res){
+	app.get('/comments', function(req, res, next){
 
-		Movie.find({}, null, {sort: {'item.Title': 1}}, function(err, data){
+		Movie.find({}, null, {sort: {'item.Title': 1}}, function(error, data){
 			try 
 			{
-				if(err) throw err;
+				if(error) throw error;
 				res.render('comment', {comments: data});
 			}
-			catch(err)
+			catch(error)
 			{
-				res.status(500).send(err);
+				error.status = 500;
+				next(error);
 			}
 		});		
 		
 	});
 
-	app.get('/comments/:id', function(req, res) {
+	app.get('/new_comment/:id', function(req, res, next) {
 
-		res.send(req.params.id);
-
+		if(req.params.id)
+		{
+			res.send(req.params.id);
+		}
+		else
+		{
+			error = new Error('Internal Server Error');
+			error.status = 500;
+			next(error);
+		}
 	});
 
 
 	// 1. sending comment in request body of the post method along with movie id
 	// 2. adding comment to mongodb database to correct movie object
 
-	app.post('/comments', urlencodedParser, async function(req, res){
+	app.post('/comments', urlencodedParser, async function(req, res, next){
 
 		if(req.body.item)
 		{	
-			Movie.findByIdAndUpdate(req.body.id, { $push: { Comments: {comment : req.body.item} }}, function(err, data) {
+			Movie.findByIdAndUpdate(req.body.id, { $push: { Comments: {comment : req.body.item} }}, function(error, data) {
 				try 
 				{
-					if (err) throw err;
+					if (error) throw error;
 					res.json(data);
 				}
-				catch(err)
+				catch(error)
 				{
-					res.status(500).send('Internal Server Error');
+					error.status = 500;
+					next(error);
 				}
 				
 			});
 		}
 		else
 		{
-			res.status(422).send('Comment is empty');
+			error = new Error('Unprocessable Entity');
+			error.status = 422;
+			next(error);
 		}
 
 	});
 
-	app.delete('/comments/:id', function(req, res) {
+	app.delete('/comments/:id', function(req, res, next) {
 
 		// delete the comment of the movie from mongodb
 
@@ -74,21 +86,24 @@ module.exports = function(app) {
 			id = commentAndId[commentAndId.length - 1];
 			commentAndId.pop();
 
-			Movie.findByIdAndUpdate(id, { $pull: {Comments : {comment : commentAndId.join(' ')}}}, function(err, data){
+			Movie.findByIdAndUpdate(id, { $pull: {Comments : {comment : commentAndId.join(' ')}}}, function(error, data){
 				try 
 				{
-					if (err) throw err;
+					if (error) throw error;
 					res.json(data);
 				}
-				catch(err)
+				catch(error)
 				{
-					res.status(500).send('Internal Server Error');
+					error.status = 500;
+					next(error);
 				}
 			});
 		}
 		else
 		{
-			res.status(422).send('Comment id is not present');
+			error = new Error('Unprocessable Entity');
+			error.status = 422;
+			next(error);
 		}
 		
 

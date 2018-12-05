@@ -7,7 +7,7 @@ $(document).ready(function(){
 
 		$.ajax({
 			type: 'GET',
-			url: '/comments/' + comment.item,
+			url: '/new_comment/' + comment.item,
 			success: function(data) {
 
 				for(let i = 0; i < 100; i++)
