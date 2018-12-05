@@ -14,7 +14,7 @@ const errorController = require('./controllers/errorController');
 let port = 8000;
 
 if (process.env.NODE_ENV != 'test') {
-	port = ENV.port;
+	port = 3333;
 }
 
 // set up template engine
