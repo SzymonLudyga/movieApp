@@ -14,7 +14,7 @@ const errorController = require('./controllers/errorController');
 let port = 8000;
 
 if (process.env.NODE_ENV != 'test') {
-	port = 3333;
+	port = ENV.port;
 }
 
 // set up template engine
@@ -36,6 +36,6 @@ app.use((error, res) => {
 	res.render('failure', {err: error.status});
 });
 
-app.listen(3333);
+app.listen(port);
 
 module.exports = app;
